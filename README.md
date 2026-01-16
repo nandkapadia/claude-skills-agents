@@ -4,15 +4,44 @@ Reusable skills and agents for [Claude Code](https://claude.ai/claude-code) - ge
 
 ## Installation
 
+### Quick Install (Recommended)
+
+**macOS / Linux:**
+```bash
+git clone https://github.com/nandkapadia/claude-skills-agents.git
+cd claude-skills-agents
+./install.sh
+```
+
+**Windows (PowerShell):**
+```powershell
+git clone https://github.com/nandkapadia/claude-skills-agents.git
+cd claude-skills-agents
+.\install.ps1
+```
+
+### Manual Install
+
 Copy contents to your global Claude Code directory:
 
+**macOS / Linux:**
 ```bash
-# Skills
 cp -r skills/* ~/.claude/skills/
-
-# Agents
 cp -r agents/* ~/.claude/agents/
 ```
+
+**Windows:**
+```powershell
+Copy-Item -Recurse skills\* $env:USERPROFILE\.claude\skills\
+Copy-Item -Recurse agents\* $env:USERPROFILE\.claude\agents\
+```
+
+### Installation Paths
+
+| Platform | Skills | Agents |
+|----------|--------|--------|
+| macOS/Linux | `~/.claude/skills/` | `~/.claude/agents/` |
+| Windows | `%USERPROFILE%\.claude\skills\` | `%USERPROFILE%\.claude\agents\` |
 
 ## Skills
 
