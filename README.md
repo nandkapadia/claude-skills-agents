@@ -1,6 +1,10 @@
-# Claude Code Skills & Agents
+# Claude Code & GitHub Copilot Skills & Agents
 
-Reusable skills and agents for [Claude Code](https://claude.ai/claude-code) - general-purpose process workflows that work across any project.
+Reusable skills and agents for AI coding assistants - general-purpose process workflows that work across any project.
+
+**Supported Platforms:**
+- [Claude Code](https://claude.ai/claude-code)
+- [GitHub Copilot](https://github.com/features/copilot) (CLI, VS Code agent mode)
 
 ## Installation
 
@@ -10,7 +14,7 @@ Reusable skills and agents for [Claude Code](https://claude.ai/claude-code) - ge
 ```bash
 git clone https://github.com/nandkapadia/claude-skills-agents.git
 cd claude-skills-agents
-./install.sh
+./install.sh          # Installs to both Claude and Copilot
 ```
 
 **Windows (PowerShell):**
@@ -20,32 +24,39 @@ cd claude-skills-agents
 .\install.ps1
 ```
 
+### Installation Options
+
+```bash
+./install.sh              # Install to both Claude and Copilot (default)
+./install.sh --claude-only    # Install only to Claude Code
+./install.sh --copilot-only   # Install only to GitHub Copilot
+./install.sh --help           # Show help
+```
+
 ### Manual Install
 
-Copy contents to your global Claude Code directory:
-
-**macOS / Linux:**
+**Claude Code:**
 ```bash
 cp -r skills/* ~/.claude/skills/
 cp -r agents/* ~/.claude/agents/
 ```
 
-**Windows:**
-```powershell
-Copy-Item -Recurse skills\* $env:USERPROFILE\.claude\skills\
-Copy-Item -Recurse agents\* $env:USERPROFILE\.claude\agents\
+**GitHub Copilot:**
+```bash
+cp -r copilot/skills/* ~/.copilot/skills/
+cp -r copilot/agents/* ~/.copilot/agents/
 ```
 
 ### Installation Paths
 
 | Platform | Skills | Agents |
 |----------|--------|--------|
-| macOS/Linux | `~/.claude/skills/` | `~/.claude/agents/` |
-| Windows | `%USERPROFILE%\.claude\skills\` | `%USERPROFILE%\.claude\agents\` |
+| Claude Code | `~/.claude/skills/` | `~/.claude/agents/` |
+| GitHub Copilot | `~/.copilot/skills/` | `~/.copilot/agents/` |
 
 ## Skills
 
-Skills teach Claude specialized knowledge and workflows. Place in `~/.claude/skills/<name>/SKILL.md`.
+Skills teach your AI coding assistant specialized knowledge and workflows.
 
 ### Process Skills
 
@@ -68,7 +79,7 @@ Skills teach Claude specialized knowledge and workflows. Place in `~/.claude/ski
 
 ## Agents
 
-Agents are specialized sub-agents with custom prompts and tool access. Place in `~/.claude/agents/<name>.md`.
+Agents are specialized sub-agents with custom prompts and tool access.
 
 | Agent | Description | Tools |
 |-------|-------------|-------|
@@ -80,15 +91,13 @@ Agents are specialized sub-agents with custom prompts and tool access. Place in 
 
 ## Usage
 
-### Skills
+### Claude Code
 
-Skills are automatically discovered by Claude Code. Reference them with `@skill-name`:
+Skills are automatically discovered. Reference them with `@skill-name`:
 
 ```
 Use @test-driven-development for this implementation.
 ```
-
-### Agents
 
 Dispatch agents using the Task tool:
 
@@ -98,6 +107,20 @@ Task(
     description="Coordinate multi-file implementation",
     prompt="..."
 )
+```
+
+### GitHub Copilot
+
+In Copilot CLI or VS Code agent mode, skills are loaded automatically when relevant to your prompt. You can also invoke explicitly:
+
+```
+$test-driven-development
+```
+
+Or reference in your prompt:
+
+```
+Use the test-driven-development skill for this implementation.
 ```
 
 ## Workflow Integration
@@ -112,6 +135,60 @@ plan → orchestrator → specialists → review
 2. **orchestrator** - Coordinate parallel agent deployment
 3. **specialists** - Execute tasks using process skills (TDD, debugging, etc.)
 4. **review** - Two-stage review before merging
+
+## Directory Structure
+
+```
+claude-skills-agents/
+├── skills/                 # Claude Code skills (source of truth)
+│   ├── test-driven-development/
+│   │   └── SKILL.md
+│   ├── systematic-debugging/
+│   │   └── SKILL.md
+│   └── ...
+├── agents/                 # Claude Code agents
+│   ├── orchestrator.md
+│   ├── plan.md
+│   └── ...
+├── copilot/               # GitHub Copilot (auto-synced)
+│   ├── skills/
+│   └── agents/
+├── scripts/
+│   ├── sync-copilot.sh    # Sync Claude → Copilot
+│   └── install-hooks.sh   # Install pre-commit hook
+├── install.sh             # Install to ~/.claude/ and ~/.copilot/
+├── install.ps1            # Windows installer
+└── README.md
+```
+
+## Development
+
+### Keeping Formats in Sync
+
+The `skills/` directory is the source of truth. The `copilot/` directory is auto-synced.
+
+**For contributors:**
+
+1. Install the pre-commit hook:
+   ```bash
+   ./scripts/install-hooks.sh
+   ```
+
+2. Edit skills in `skills/` directory
+
+3. On commit, the hook automatically syncs to `copilot/`
+
+**Manual sync:**
+```bash
+./scripts/sync-copilot.sh
+```
+
+### Adding New Skills
+
+1. Create directory: `skills/<skill-name>/SKILL.md`
+2. Use YAML frontmatter with `name` and `description`
+3. Follow the existing skill format
+4. Test with both Claude Code and Copilot
 
 ## Contributing
 
